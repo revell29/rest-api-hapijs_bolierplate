@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/Cellar/node/14.5.0/bin/node /usr/local/bin/yarn add @types/hapi-cors --dev
+  /usr/local/Cellar/node/14.5.0/bin/node /usr/local/bin/yarn add ef-tspm --dev
 
 PATH: 
-  /usr/local/opt/php@7.3/bin:/usr/local/opt/php@7.3/sbin:/Users/mac/.deno/bin:/usr/local/opt/php@7.3/sbin:/Users/mac/Development/bin:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin:/Users/mac/Library/Android/sdk/platform-tools:/Users/mac/Library/Android/sdk/emulator:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin
+  /usr/local/opt/php@7.3/bin:/usr/local/opt/php@7.3/sbin:/Users/mac/.deno/bin:/usr/local/opt/php@7.3/sbin:/Users/mac/Development/bin:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin:/Users/mac/Library/Android/sdk/platform-tools:/Users/mac/Library/Android/sdk/emulator:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:/usr/local/opt/php@7.3/bin:/usr/local/opt/php@7.3/sbin:/Users/mac/.deno/bin:/Users/mac/Development/bin:/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin:/Users/mac/Library/Android/sdk/platform-tools:/Users/mac/Library/Android/sdk/emulator
 
 Yarn version: 
   1.21.1
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2fhapi-cors: Not found
+  Error: https://registry.yarnpkg.com/ef-tspm: Not found
       at Request.params.callback [as _callback] (/usr/local/lib/node_modules/yarn/lib/cli.js:66947:18)
       at Request.self.callback (/usr/local/lib/node_modules/yarn/lib/cli.js:140665:22)
       at Request.emit (events.js:314:20)
