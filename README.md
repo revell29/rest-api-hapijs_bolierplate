@@ -1,6 +1,6 @@
 # Scraping Marketplace (Backend)
 
-this project was built with [NextJS](https://nextjs.org)
+this project was built with [HapiJS](https://hapi.dev)
 
 ## Get Started
 
