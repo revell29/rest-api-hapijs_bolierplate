@@ -37,7 +37,7 @@ const serverInit = async (): Promise<Server> => {
   server.register(Inert);
   server.register({
     plugin: require("hapi-cors"),
-    options: { origins: ["http://localhost:3000"] },
+    options: { origins: ["*"] },
   });
 
   server.auth.strategy("jwt", "jwt", {
