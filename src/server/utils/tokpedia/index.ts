@@ -2,7 +2,7 @@ import fetch from "isomorphic-unfetch";
 
 const url = `https://gql.tokopedia.com`;
 
-export const searchProduct = async (request: any) => {
+export const searchProduct = async (req: any) => {
   const headers = {
     authority: "gql.tokopedia.com",
     pragma: "no-cache",
@@ -25,7 +25,7 @@ export const searchProduct = async (request: any) => {
   const response = await fetch(url, {
     method: "POST",
     headers,
-    body: `[{"operationName":"SearchProductQueryV4","variables":{"params":"device=desktop&navsource=home&ob=23&page=${request.payload.page}&pmax=${request.payload.maxPrice}&pmin=${request.payload.minPrice}&q=${request.payload.keyword}&related=true&rows=1000&safe_search=false&scheme=https&shipping=&source=search&st=product&start=0&unique_id=24ffa8daecbd1504dae19def8320d8b6&user_id=&variants="},"query":"query SearchProductQueryV4($params: String!) {\\n  ace_search_product_v4(params: $params) {\\n    header {\\n      totalData\\n      totalDataText\\n      processTime\\n      responseCode\\n      errorMessage\\n      additionalParams\\n      keywordProcess\\n      __typename\\n    }\\n    data {\\n      isQuerySafe\\n      ticker {\\n        text\\n        query\\n        typeId\\n        __typename\\n      }\\n      redirection {\\n        redirectUrl\\n        departmentId\\n        __typename\\n      }\\n      related {\\n        relatedKeyword\\n        otherRelated {\\n          keyword\\n          url\\n          product {\\n            id\\n            name\\n            price\\n            imageUrl\\n            rating\\n            countReview\\n            url\\n            priceStr\\n            wishlist\\n            shop {\\n              city\\n              isOfficial\\n              isPowerBadge\\n              __typename\\n            }\\n            ads {\\n              id\\n              productClickUrl\\n              productWishlistUrl\\n              shopClickUrl\\n              productViewUrl\\n              __typename\\n            }\\n            __typename\\n          }\\n          __typename\\n        }\\n        __typename\\n      }\\n      suggestion {\\n        currentKeyword\\n        suggestion\\n        suggestionCount\\n        instead\\n        insteadCount\\n        query\\n        text\\n        __typename\\n      }\\n      products {\\n        id\\n        name\\n        ads {\\n          id\\n          productClickUrl\\n          productWishlistUrl\\n          productViewUrl\\n          __typename\\n        }\\n        badges {\\n          title\\n          imageUrl\\n          show\\n          __typename\\n        }\\n        category: departmentId\\n        categoryBreadcrumb\\n        categoryId\\n        categoryName\\n        countReview\\n        discountPercentage\\n        gaKey\\n        imageUrl\\n        labelGroups {\\n          position\\n          title\\n          type\\n          __typename\\n        }\\n        originalPrice\\n        price\\n        priceRange\\n        rating\\n        shop {\\n          id\\n          name\\n          url\\n          city\\n          isOfficial\\n          isPowerBadge\\n          __typename\\n        }\\n        url\\n        wishlist\\n        sourceEngine: source_engine\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n"}]`,
+    body: `[{"operationName":"SearchProductQueryV4","variables":{"params":"device=desktop&navsource=home&ob=23&page=${req.page}&pmax=${req.maxPrice}&pmin=${req.minPrice}&q=${req.keyword}&related=true&rows=1000&safe_search=false&scheme=https&shipping=&source=search&st=product&start=0&unique_id=24ffa8daecbd1504dae19def8320d8b6&user_id=&variants="},"query":"query SearchProductQueryV4($params: String!) {\\n  ace_search_product_v4(params: $params) {\\n    header {\\n      totalData\\n      totalDataText\\n      processTime\\n      responseCode\\n      errorMessage\\n      additionalParams\\n      keywordProcess\\n      __typename\\n    }\\n    data {\\n      isQuerySafe\\n      ticker {\\n        text\\n        query\\n        typeId\\n        __typename\\n      }\\n      redirection {\\n        redirectUrl\\n        departmentId\\n        __typename\\n      }\\n      related {\\n        relatedKeyword\\n        otherRelated {\\n          keyword\\n          url\\n          product {\\n            id\\n            name\\n            price\\n            imageUrl\\n            rating\\n            countReview\\n            url\\n            priceStr\\n            wishlist\\n            shop {\\n              city\\n              isOfficial\\n              isPowerBadge\\n              __typename\\n            }\\n            ads {\\n              id\\n              productClickUrl\\n              productWishlistUrl\\n              shopClickUrl\\n              productViewUrl\\n              __typename\\n            }\\n            __typename\\n          }\\n          __typename\\n        }\\n        __typename\\n      }\\n      suggestion {\\n        currentKeyword\\n        suggestion\\n        suggestionCount\\n        instead\\n        insteadCount\\n        query\\n        text\\n        __typename\\n      }\\n      products {\\n        id\\n        name\\n        ads {\\n          id\\n          productClickUrl\\n          productWishlistUrl\\n          productViewUrl\\n          __typename\\n        }\\n        badges {\\n          title\\n          imageUrl\\n          show\\n          __typename\\n        }\\n        category: departmentId\\n        categoryBreadcrumb\\n        categoryId\\n        categoryName\\n        countReview\\n        discountPercentage\\n        gaKey\\n        imageUrl\\n        labelGroups {\\n          position\\n          title\\n          type\\n          __typename\\n        }\\n        originalPrice\\n        price\\n        priceRange\\n        rating\\n        shop {\\n          id\\n          name\\n          url\\n          city\\n          isOfficial\\n          isPowerBadge\\n          __typename\\n        }\\n        url\\n        wishlist\\n        sourceEngine: source_engine\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n"}]`,
   });
   const data = await response.json();
 
@@ -40,17 +40,18 @@ export const searchProduct = async (request: any) => {
         price: product.price,
         originalPrice: product.originalPrice,
         ratting: product.ratting,
-        shop: product.shop,
+        shop: product.shop.name,
         url: product.url,
         badges: product.badges,
+        marketplace: "tokopedia",
       });
     });
   });
 
   return {
     query: {
-      page: request.payload.page,
-      keywords: request.payload.keyword,
+      page: req.page,
+      keywords: req.keyword,
       totalData: data
         ? data[0].data.ace_search_product_v4.header.totalData
         : null,

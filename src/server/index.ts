@@ -1,11 +1,13 @@
 import "module-alias/register";
 import { Server } from "@hapi/hapi";
+import path from "path";
 import * as routes from "@route/index";
 import { connection } from "@database/connection";
 import { forEach as lodashForeach } from "lodash";
 import jwt from "hapi-auth-jwt2";
 import logger from "@utils/logger";
 import { checkJwt } from "@utils/checkJwt";
+import Inert from "@hapi/inert";
 import chalk from "chalk";
 
 const serverInit = async (): Promise<Server> => {
@@ -16,6 +18,9 @@ const serverInit = async (): Promise<Server> => {
     port: process.env.PORT || 3010,
     routes: {
       cors: true,
+      files: {
+        relativeTo: path.join(__dirname, "../../public"),
+      },
     },
   });
 
@@ -29,6 +34,7 @@ const serverInit = async (): Promise<Server> => {
   });
 
   server.register(jwt);
+  server.register(Inert);
   server.register({
     plugin: require("hapi-cors"),
     options: { origins: ["http://localhost:3000"] },
@@ -40,8 +46,19 @@ const serverInit = async (): Promise<Server> => {
     verifyOptions: { algorithms: ["HS256"] },
   });
 
-  server.auth.default("jwt");
+  // server.auth.default("jwt");
 
+  server.route({
+    method: "GET",
+    path: "/public/{path*}",
+    handler: {
+      directory: {
+        path: path.join(__dirname, "../../public"),
+        index: true,
+        listing: true,
+      },
+    },
+  });
   server.route(serverRoutes);
   return server;
 };
