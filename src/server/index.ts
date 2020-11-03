@@ -13,7 +13,7 @@ const serverInit = async (): Promise<Server> => {
 
   const server = new Server({
     host: "localhost",
-    port: 3010,
+    port: process.env.PORT || 3010,
     routes: {
       cors: true,
     },
