@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "alias": "scrapping-backend",
+  "builds": [
+    {
+      "src": "build/index.js",
+      "use": "@now/node-server"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/.*",
+      "dest": "build/index.js"
+    }
+  ]
+}

@@ -7,11 +7,13 @@
     "tsc": "tsc",
     "dev": "cross-env NODE_ENV=development && nodemon -r tsconfig-paths/register ./src/index.ts",
     "build": "cross-env NODE_ENV=production tsc && ef-tspm",
-    "serve:local": "cross-env NODE_ENV=production node ./build/index.js",
-    "production": "NODE_ENV=production pm2 start ./build"
+    "start:prod": "node ./build/index.js"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.12.1",
     "@hapi/hapi": "^20.0.1",
+    "@now/node-server": "^0.8.2",
+    "@vercel/node": "^1.8.4",
     "bcrypt": "^5.0.0",
     "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@babel/node": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
+    "@ef-carbon/tspm": "^2.2.5",
     "@types/bcrypt": "^3.0.0",
     "@types/hapi__hapi": "^20.0.2",
     "@types/jsonwebtoken": "^8.5.0",
