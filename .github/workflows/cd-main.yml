@@ -28,6 +28,6 @@ jobs:
             cd /var/www/marketplace_scraping/backend
             git pull origin master
             git status
-            npm install --only=prod
+            npm install
             npm run build
             pm2 restart backend_scrapping
