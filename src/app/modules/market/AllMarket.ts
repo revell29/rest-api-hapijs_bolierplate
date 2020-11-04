@@ -26,12 +26,9 @@ class AllMarketController {
 
   async eportToExcel(request: Request, h: ResponseToolkit) {
     try {
-      const [tokped, bukalapak] = await Promise.all([
-        tokopediaProduct(request.query),
-        bukalapakProduct(request.query),
-      ]);
+      const [tokped] = await Promise.all([tokopediaProduct(request.query)]);
 
-      const data = [...tokped.products, ...bukalapak.products];
+      const data = [...tokped.products];
 
       let dataScraping: Array<object> = [];
       data.map((items: any) => {
