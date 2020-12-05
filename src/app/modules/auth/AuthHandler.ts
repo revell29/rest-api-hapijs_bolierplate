@@ -1,32 +1,32 @@
 import { Request, ResponseToolkit, ResponseObject } from "@hapi/hapi";
-import User, { IUser } from "@database/models/User";
 import Bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import config from "@utils/jwt/config";
+import Customer from "@lib/models/Customer";
 
-class AuthController {
+class AuthHandler {
   /**
    * Register User
    *
    * @param request
    * @param h
    */
-  async register(
-    request: Request,
-    h: ResponseToolkit
-  ): Promise<ResponseObject> {
+  async register(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     try {
       const salt = Bcrypt.genSaltSync(10);
-      let { username, password }: any = request.payload;
+      let { fullname, password, email, no_hp }: any = request.payload;
       password = Bcrypt.hashSync(password, salt);
 
-      const user = new User({ username: username, password: password });
-      const result = await user.save();
-      return h
-        .response({ message: "Register berhasil", data: result })
-        .code(200);
+      const user = await Customer.create({
+        fullname: fullname,
+        email: email,
+        password: password,
+        no_hp: no_hp,
+      });
+
+      return h.response({ message: "Register berhasil", data: user }).code(200);
     } catch (error) {
-      return h.response(error).takeover();
+      return h.response({ ...error });
     }
   }
 
@@ -38,12 +38,12 @@ class AuthController {
    */
   async login(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     try {
-      const { username, password }: any = request.payload;
+      const { email, password }: any = request.payload;
 
-      let user: IUser | null = await User.findOne({ username });
+      let dataCustomer = await Customer.findOne({ where: { email: email } });
 
       // Check user data
-      if (!user) {
+      if (!dataCustomer) {
         return h
           .response({
             message: "Your account not found. Please register",
@@ -52,7 +52,7 @@ class AuthController {
       }
 
       // check password
-      if (!Bcrypt.compareSync(password, user.password)) {
+      if (!Bcrypt.compareSync(password, dataCustomer.password)) {
         return h
           .response({
             message: "Incorrect username or password.",
@@ -62,14 +62,14 @@ class AuthController {
 
       // provide jwt token
       const token = jwt.sign(
-        { id: user.id, username: user.username },
+        { id: dataCustomer.id, username: dataCustomer.fullname },
         config.jwtSecret,
         {
           expiresIn: config.jwtTimer,
         }
       );
 
-      return h.response({ data: user, token: token }).code(200);
+      return h.response({ data: dataCustomer, token: token }).code(200);
     } catch (error) {
       console.log(error);
       return h.response(error).takeover();
@@ -84,8 +84,8 @@ class AuthController {
    */
   async profile(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     try {
-      const user: IUser | null = await User.findOne({ _id: request.params.id });
-      return h.response({ data: user }).code(200);
+      const dataCustomer = await Customer.findOne({ where: { id: request.params.id } });
+      return h.response({ data: dataCustomer }).code(200);
     } catch (error) {
       console.log(error);
       return h.response(error).takeover();
@@ -93,4 +93,4 @@ class AuthController {
   }
 }
 
-export default new AuthController();
+export default AuthHandler;

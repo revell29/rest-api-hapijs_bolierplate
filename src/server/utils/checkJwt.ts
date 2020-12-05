@@ -1,12 +1,11 @@
 import { Request, ResponseToolkit } from "@hapi/hapi";
-import User, { IUser } from "@database/models/User";
-
+import Customer from "@lib/models/Customer";
 export const checkJwt = async (decode: any, request: Request) => {
-  const user: IUser | null = await User.findOne({ _id: decode.id });
+  const customer = await Customer.findOne({ where: { id: decode.id } });
 
-  if (!user) {
+  if (!customer) {
     return { isValid: false };
   } else {
-    return { isValid: true, credentials: { user } };
+    return { isValid: true, credentials: { customer } };
   }
 };

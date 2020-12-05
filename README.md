@@ -1,4 +1,4 @@
-# Scraping Marketplace (Backend)
+# REST API Boilerplate
 
 this project was built with [HapiJS](https://hapi.dev)
 
@@ -6,7 +6,7 @@ this project was built with [HapiJS](https://hapi.dev)
 
 - clone this repository
 - run `yarn` or `npm install`
-- change mongodb url in `.env` to your server
+- change all config in `server/utils/config.ts`
 - then `yarn dev` to run in development mode
 
 ## Enjoy

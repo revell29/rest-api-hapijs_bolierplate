@@ -1,67 +1,30 @@
 import "module-alias/register";
 import { Server } from "@hapi/hapi";
+import plugins from "@utils/plugin";
 import path from "path";
-import * as routes from "@route/index";
-import { connection } from "@database/connection";
-import { forEach as lodashForeach } from "lodash";
-import jwt from "hapi-auth-jwt2";
+import modules from "@modules/index";
+import config from "./utils/config";
 import logger from "@utils/logger";
-import { checkJwt } from "@utils/checkJwt";
-import Inert from "@hapi/inert";
+import { initAuth } from "@utils/jwt/config";
 import chalk from "chalk";
 
 const serverInit = async (): Promise<Server> => {
-  let serverRoutes: any = [];
-
   const server = new Server({
     host: "localhost",
-    port: process.env.PORT || 3010,
+    port: config.SERVER_PORT,
     routes: {
-      cors: true,
+      cors: {
+        origin: [config.ORIGIN],
+      },
       files: {
         relativeTo: path.join(__dirname, "../../public"),
       },
     },
   });
 
-  lodashForeach(routes, (value: any, key: any) => {
-    serverRoutes.push(
-      ...value.map((route: any) => {
-        route.path = "/api" + route.path;
-        return route;
-      })
-    );
-  });
-
-  server.register(jwt);
-  server.register(Inert);
-  server.register({
-    plugin: require("hapi-cors"),
-    options: {
-      origins: ["http://localhost:3000", "https://scraping.apsyadira.com/"],
-    },
-  });
-
-  server.auth.strategy("jwt", "jwt", {
-    key: "1q@w3e4r5t6y",
-    validate: checkJwt,
-    verifyOptions: { algorithms: ["HS256"] },
-  });
-
-  // server.auth.default("jwt");
-
-  server.route({
-    method: "GET",
-    path: "/public/{path*}",
-    handler: {
-      directory: {
-        path: path.join(__dirname, "../../public"),
-        index: true,
-        listing: true,
-      },
-    },
-  });
-  server.route(serverRoutes);
+  await server.register(plugins);
+  initAuth(server);
+  await server.register(modules);
   return server;
 };
 
@@ -71,16 +34,19 @@ export const startServer = async (): Promise<void> => {
     server.start();
     server.events.on("response", function (request: any) {
       logger.info(
-        `${chalk.cyan(
-          `[${request.info.remoteAddress}]`
-        )}: ${request.method.toUpperCase()} ${request.path} ${chalk.cyan(
-          request.response.statusCode
-        )}`
+        `${chalk.cyan(`[${request.info.remoteAddress}]`)}: ${request.method.toUpperCase()} ${
+          request.path
+        } ${chalk.cyan(request.response.statusCode)}`
       );
     });
+
+    if (process.env.NODE_ENV !== "production") {
+      console.log(config);
+    }
+
     console.info(chalk.white(`Server running at: ${server.info.uri} 🚀`));
     // DB Connection
-    connection();
+    // connection();
   } catch (e) {
     logger.error(e.message);
   }

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017",
     "lib": ["es2015", "dom"],
     "module": "commonjs",
     "strict": true,
@@ -10,14 +10,16 @@
     "outDir": "./build",
     "baseUrl": "./",
     "paths": {
-      "@database/*": ["src/database/*"],
+      "@database/*": ["src/db/*"],
       "@modules/*": ["src/app/modules/*"],
+      "@models/*": ["src/app/lib/models/*"],
+      "@lib/*": ["src/app/lib/*"],
       "@repository/*": ["src/app/repository/*"],
       "@route/*": ["src/routes/*"],
       "@utils/*": ["src/server/utils/*"],
       "@helpers/*": ["src/app/helpers/*"]
     }
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "src/**/*.js"]
+  "include": ["src/**/*.ts", "src/**/*.js"],
+  "exclude": ["node_modules"]
 }
