@@ -9,21 +9,32 @@ import { initAuth } from "@utils/jwt/config";
 import chalk from "chalk";
 
 const serverInit = async (): Promise<Server> => {
-  const server = new Server({
-    host: "localhost",
+  const serverOptions = {
     port: config.SERVER_PORT,
     routes: {
-      cors: {
-        origin: [config.ORIGIN],
+      cors: true,
+      payload: {
+        maxBytes: 20971520,
       },
       files: {
         relativeTo: path.join(__dirname, "../../public"),
       },
     },
-  });
+  };
 
+  const server = new Server(serverOptions);
+  server.state("token", {
+    ttl: 24 * 60 * 60 * 1000, // One day
+    isSecure: false,
+    isHttpOnly: true,
+    encoding: "base64json",
+    clearInvalid: true,
+    strictHeader: true,
+  });
+  // register plugin
   await server.register(plugins);
   initAuth(server);
+  // register modules
   await server.register(modules);
   return server;
 };
@@ -45,8 +56,6 @@ export const startServer = async (): Promise<void> => {
     }
 
     console.info(chalk.white(`Server running at: ${server.info.uri} 🚀`));
-    // DB Connection
-    // connection();
   } catch (e) {
     logger.error(e.message);
   }

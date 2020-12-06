@@ -10,13 +10,18 @@ export interface CustomerAttributes {
   no_identitas: number;
   no_hp: number;
   alamat: string;
+  isActive: boolean;
+  token: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 // Some fields are optional when calling UserModel.create() or UserModel.build()
 interface CustomerCreationAttribute
-  extends Optional<CustomerAttributes, "id" | "photo" | "no_identitas" | "alamat"> {}
+  extends Optional<
+    CustomerAttributes,
+    "id" | "photo" | "no_identitas" | "alamat" | "isActive" | "token"
+  > {}
 
 // We need to declare an interface for our model that is basically what our class would be
 interface CustomerInstance
@@ -36,19 +41,28 @@ const Customer = sequelize.define<CustomerInstance>(
     password: DataTypes.STRING,
     photo: DataTypes.STRING,
     no_identitas: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     no_hp: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     alamat: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    token: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     createdAt: {
       type: DataTypes.DATE,
+      defaultValue: new Date(),
     },
     updatedAt: {
       type: DataTypes.DATE,

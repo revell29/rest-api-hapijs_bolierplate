@@ -13,19 +13,28 @@ export = {
       password: DataTypes.STRING,
       photo: DataTypes.STRING,
       no_identitas: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       no_hp: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true,
       },
       alamat: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      token: {
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       createdAt: {
         type: DataTypes.DATE,
+        defaultValue: new Date(),
       },
       updatedAt: {
         type: DataTypes.DATE,

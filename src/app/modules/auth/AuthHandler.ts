@@ -15,16 +15,23 @@ class AuthHandler {
     try {
       const salt = Bcrypt.genSaltSync(10);
       let { fullname, password, email, no_hp }: any = request.payload;
+      const customer = await Customer.findOne({ where: { email: email } });
       password = Bcrypt.hashSync(password, salt);
 
-      const user = await Customer.create({
+      if (customer) {
+        return h.response({ message: "Email sudah terdaftar.", code: 400 }).code(400);
+      }
+
+      await Customer.create({
         fullname: fullname,
         email: email,
         password: password,
         no_hp: no_hp,
       });
 
-      return h.response({ message: "Register berhasil", data: user }).code(200);
+      return h
+        .response({ message: "Registrasi berhasil. Harap verifikasi email kamu. " })
+        .code(200);
     } catch (error) {
       return h.response({ ...error });
     }
@@ -51,6 +58,14 @@ class AuthHandler {
           .code(401);
       }
 
+      if (dataCustomer.isActive === false) {
+        return h
+          .response({
+            message: "Harap verifikasi email anda dahulu.",
+          })
+          .code(401);
+      }
+
       // check password
       if (!Bcrypt.compareSync(password, dataCustomer.password)) {
         return h
@@ -69,10 +84,14 @@ class AuthHandler {
         }
       );
 
+      dataCustomer.token = token;
+      await dataCustomer.save();
+
+      h.state("token", { firstVisit: false });
       return h.response({ data: dataCustomer, token: token }).code(200);
     } catch (error) {
       console.log(error);
-      return h.response(error).takeover();
+      throw new Error(error);
     }
   }
 
@@ -84,7 +103,9 @@ class AuthHandler {
    */
   async profile(request: Request, h: ResponseToolkit): Promise<ResponseObject> {
     try {
-      const dataCustomer = await Customer.findOne({ where: { id: request.params.id } });
+      const dataCustomer = await Customer.findOne({
+        where: { token: request.headers.authorization },
+      });
       return h.response({ data: dataCustomer }).code(200);
     } catch (error) {
       console.log(error);

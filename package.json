@@ -10,6 +10,7 @@
     "start:prod": "node ./build/index.js",
     "db:migrate": "sequelize db:migrate",
     "migrate": "ts-node ./node_modules/.bin/sequelize db:migrate",
+    "migrate:rollback": "ts-node ./node_modules/.bin/sequelize db:migrate:undo",
     "test": "jest"
   },
   "dependencies": {
